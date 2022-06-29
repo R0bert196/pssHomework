@@ -2,6 +2,7 @@ package org.example.xmlHandlers;
 
 import org.example.pojos.Price;
 import org.example.pojos.Product;
+import org.example.pojos.Products;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -9,11 +10,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +50,8 @@ public class XmlParser {
             List<Product> products = getProducts(orderNodes);
             //sort by timestamp and price
             products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
+            productToXML(products.get(0));
+
 
             System.out.println(products);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -100,6 +107,21 @@ public class XmlParser {
         return products;
     }
 
+
+    private void productToXML(Product product) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            StringWriter sw = new StringWriter();
+            jaxbMarshaller.marshal(product, sw);
+
+            String xmlContent = sw.toString();
+            System.out.println( xmlContent );
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

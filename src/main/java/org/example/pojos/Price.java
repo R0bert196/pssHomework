@@ -7,14 +7,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-@XStreamAlias("price")
 public class Price {
 
-    @XStreamAsAttribute
     private String currency;
     private float  price;
+
+    @XmlAttribute
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    @XmlElement(name = "price")
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+
 }
