@@ -1,6 +1,7 @@
 package org.example.xmlHandlers;
 
-import org.example.pojos.Order;
+import org.example.pojos.Price;
+import org.example.pojos.Product;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,6 +14,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XmlParser {
@@ -32,18 +40,7 @@ public class XmlParser {
             Document doc = builder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             NodeList orderNodes = doc.getElementsByTagName("order");
-            getOrders(orderNodes);
-//            for (int i = 0; i < orderNodes.getLength(); i++) {
-//                Node orderNode = orderNodes.item(i);
-//                if (orderNode.getNodeType() == Node.ELEMENT_NODE) {
-//                    Element orderElement =  (Element) orderNode;
-//                    System.out.println(orderElement.getAttribute("created"));
-//                    System.out.println(orderNode.getChildNodes().getLength());
-//
-//                }
-//            }
-
-
+            getProducts(orderNodes);
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
@@ -51,27 +48,49 @@ public class XmlParser {
 
     }
 
-    private List<Order> getOrders(NodeList orderNodes) {
+    private List<Product> getProducts(NodeList orderNodes) {
+        List<Product> products = new ArrayList<>();
 
         //orders nodes
         for (int i = 0; i < orderNodes.getLength(); i++) {
             Node orderNode = orderNodes.item(i);
-//            System.out.println(orderNode.getNodeName());
+            Instant created = null;
             NodeList productNodes = orderNode.getChildNodes();
+            if (orderNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element orderElement = (Element) orderNode;
+                created = Instant.parse(orderElement.getAttribute("created") + "Z");
+            }
 
-//            products nodes
+
             for (int j = 0; j < productNodes.getLength(); j++) {
                 Node productNode = productNodes.item(j);
                 if (productNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) productNode;
-                    System.out.println(element.getElementsByTagName("description").item(0).getTextContent());
-//                    System.out.println(productNode.getNodeName());
+                    NodeList priceNode = element.getElementsByTagName("price");
+                    Element priceElement = (Element) priceNode.item(0);
+                    String currency = priceElement.getAttribute("currency");
 
+                    Price price = Price.builder()
+                            .price(element.getElementsByTagName("price").item(0).getTextContent())
+                            .currency(currency)
+                            .build();
+
+                    Product product = Product.builder()
+                            .timeStamp(created)
+                            .description((element.getElementsByTagName("description").item(0).getTextContent()))
+                            .gtin(element.getElementsByTagName("gtin").item(0).getTextContent())
+                            .price(price)
+                            .supplier(element.getElementsByTagName("supplier").item(0).getTextContent())
+                            .build();
+
+
+                    products.add(product);
                 }
             }
-
         }
-        return null;
+        return products;
     }
+
+
 
 }
