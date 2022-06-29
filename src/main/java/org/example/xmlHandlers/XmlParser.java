@@ -21,6 +21,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class XmlParser {
@@ -40,13 +42,20 @@ public class XmlParser {
             Document doc = builder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             NodeList orderNodes = doc.getElementsByTagName("order");
-            getProducts(orderNodes);
+            List<Product> products = getProducts(orderNodes);
+            //sort by timestamp and price
+            products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
 
+            System.out.println(products);
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
 
     }
+
+//    private void sortProducts(List<Product> products) {
+//        products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
+//    }
 
     private List<Product> getProducts(NodeList orderNodes) {
         List<Product> products = new ArrayList<>();
@@ -71,7 +80,7 @@ public class XmlParser {
                     String currency = priceElement.getAttribute("currency");
 
                     Price price = Price.builder()
-                            .price(element.getElementsByTagName("price").item(0).getTextContent())
+                            .price(Float.parseFloat(element.getElementsByTagName("price").item(0).getTextContent()))
                             .currency(currency)
                             .build();
 

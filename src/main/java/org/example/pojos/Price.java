@@ -16,5 +16,5 @@ public class Price {
 
     @XStreamAsAttribute
     private String currency;
-    private String  price;
+    private float  price;
 }
