@@ -6,22 +6,35 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.*;
 import java.text.DateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 
-//@NoArgsConstructor
-//@AllArgsConstructor
 @Data
 @Builder
-@XStreamAlias("product")
+@AllArgsConstructor
+@NoArgsConstructor
+//@XmlRootElement(name = "product")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Product {
 
+
+    @XmlTransient
     private Instant timeStamp;
 
     private String description;
     private String gtin;
     private Price price;
+    @XmlTransient
     private String supplier;
+    private long orderid;
+
+//    @XmlTransient
+//    public void setTimeStamp(Instant timeStamp) {
+//        this.timeStamp = timeStamp;
+//    }
+
+
 
 }
