@@ -31,8 +31,8 @@ public class XmlParser {
         this.factory = factory;
     }
 
-    public void parseOrderXml() {
-        String fileName = "orders23.xml";
+    public void parseOrderXml(String fileName) {
+//        String fileName = "orders23.xml";
         File xmlFile = new File("src/main/java/org/example/inputFiles/" + fileName);
         int fileId;
         try {
