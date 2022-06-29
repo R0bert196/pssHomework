@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@XmlRootElement(name = "product")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Product {
 

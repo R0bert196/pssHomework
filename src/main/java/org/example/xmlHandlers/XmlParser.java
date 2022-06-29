@@ -60,13 +60,9 @@ public class XmlParser {
 
     }
 
-//    private void sortProducts(List<Product> products) {
-//        products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
-//    }
 
     private Map<String, List<Product>> getProducts(NodeList orderNodes) {
         Map<String, List<Product>> suppliersProducts = new HashMap<>();
-//        List<Product> products = new ArrayList<>();
 
         //orders nodes
         for (int i = 0; i < orderNodes.getLength(); i++) {
@@ -82,7 +78,7 @@ public class XmlParser {
                 fileId = Integer.parseInt(orderElement.getAttribute("ID".substring(0, 2)));
             }
 
-
+//            products nodes
             for (int j = 0; j < productNodes.getLength(); j++) {
                 Node productNode = productNodes.item(j);
                 if (productNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -113,7 +109,6 @@ public class XmlParser {
                         products.add(product);
                         suppliersProducts.put(supplier, products);
                     }
-//                    products.add(product);
                 }
             }
         }
@@ -122,18 +117,18 @@ public class XmlParser {
 
 
     private void productToXML(Products products, String fileName, int fileId) throws JAXBException, IOException {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            StringWriter sw = new StringWriter();
-            jaxbMarshaller.marshal(products, sw);
+        JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter sw = new StringWriter();
+        jaxbMarshaller.marshal(products, sw);
 
-            String xmlContent = sw.toString();
-            System.out.println( xmlContent );
-            Files.createDirectories(Paths.get("src/main/java/org/example/outputFiles/order" + fileId));
-            File file = new File("src/main/java/org/example/outputFiles/order" + fileId + "/" + fileName + fileId + ".xml");
+        String xmlContent = sw.toString();
+        System.out.println(xmlContent);
+        Files.createDirectories(Paths.get("src/main/java/org/example/outputFiles/order" + fileId));
+        File file = new File("src/main/java/org/example/outputFiles/order" + fileId + "/" + fileName + fileId + ".xml");
 
-            jaxbMarshaller.marshal(products, file);
+        jaxbMarshaller.marshal(products, file);
 
     }
 
