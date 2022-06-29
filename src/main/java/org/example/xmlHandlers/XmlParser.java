@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -18,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -49,7 +51,7 @@ public class XmlParser {
             NodeList orderNodes = doc.getElementsByTagName("order");
             List<Product> products = getProducts(orderNodes);
             //sort by timestamp and price
-            products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
+            products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()).reversed());
             Products productsObjcet = new Products(products);
             productToXML(productsObjcet);
 
@@ -119,6 +121,11 @@ public class XmlParser {
 
             String xmlContent = sw.toString();
             System.out.println( xmlContent );
+
+            File file = new File("output.xml");
+            jaxbMarshaller.marshal(products, file);
+
+
         } catch (JAXBException e) {
             e.printStackTrace();
         }
