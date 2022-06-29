@@ -70,10 +70,12 @@ public class XmlParser {
         for (int i = 0; i < orderNodes.getLength(); i++) {
             Node orderNode = orderNodes.item(i);
             Instant created = null;
+            long orderId = 0;
             NodeList productNodes = orderNode.getChildNodes();
             if (orderNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element orderElement = (Element) orderNode;
                 created = Instant.parse(orderElement.getAttribute("created") + "Z");
+                orderId = Long.parseLong(orderElement.getAttribute("ID"));
             }
 
 
@@ -97,6 +99,7 @@ public class XmlParser {
                             .gtin(element.getElementsByTagName("gtin").item(0).getTextContent())
                             .price(price)
                             .supplier(supplier)
+                            .orderid(orderId)
                             .build();
 
                     if (suppliersProducts.containsKey(supplier)) {

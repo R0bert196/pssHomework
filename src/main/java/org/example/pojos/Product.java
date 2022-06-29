@@ -26,7 +26,9 @@ public class Product {
     private String description;
     private String gtin;
     private Price price;
+    @XmlTransient
     private String supplier;
+    private long orderid;
 
 //    @XmlTransient
 //    public void setTimeStamp(Instant timeStamp) {
