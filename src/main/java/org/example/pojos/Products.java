@@ -1,14 +1,21 @@
 package org.example.pojos;
 
+import lombok.NoArgsConstructor;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 
+@NoArgsConstructor
 @XmlRootElement(name = "products")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Products {
 
-    private List<Product> products;
+    private List<Product> product;
+
+    public Products(List<Product> product) {
+        this.product = product;
+    }
 }

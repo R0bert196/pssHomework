@@ -50,7 +50,8 @@ public class XmlParser {
             List<Product> products = getProducts(orderNodes);
             //sort by timestamp and price
             products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()));
-            productToXML(products.get(0));
+            Products productsObjcet = new Products(products);
+            productToXML(productsObjcet);
 
 
             System.out.println(products);
@@ -108,13 +109,13 @@ public class XmlParser {
     }
 
 
-    private void productToXML(Product product) {
+    private void productToXML(Products products) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             StringWriter sw = new StringWriter();
-            jaxbMarshaller.marshal(product, sw);
+            jaxbMarshaller.marshal(products, sw);
 
             String xmlContent = sw.toString();
             System.out.println( xmlContent );

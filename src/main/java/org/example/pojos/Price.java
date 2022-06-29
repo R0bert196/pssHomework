@@ -2,17 +2,16 @@ package org.example.pojos;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlValue;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+//@Data
+@Getter
 @Builder
 public class Price {
 
@@ -23,9 +22,8 @@ public class Price {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
-
-    @XmlElement(name = "price")
-    public void setPrice(float price) {
+    @XmlValue
+    public void setPrice(float  price) {
         this.price = price;
     }
 
