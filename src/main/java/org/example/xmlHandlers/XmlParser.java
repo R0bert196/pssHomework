@@ -19,6 +19,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
 
@@ -30,8 +32,14 @@ public class XmlParser {
     }
 
     public void parseOrderXml() {
-        File xmlFile = new File("src/main/java/org/example/inputFiles/orders23.xml");
-
+        String fileName = "orders23.xml";
+        File xmlFile = new File("src/main/java/org/example/inputFiles/" + fileName);
+        int fileId;
+        try {
+            fileId = Integer.parseInt(fileName.substring(6, 8));
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Incorrect file name, file isn't of type orders##.xml");
+        }
         try {
             this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
@@ -43,16 +51,10 @@ public class XmlParser {
             for (String key : productsMap.keySet()) {
                 List<Product> productsList = productsMap.get(key);
                 productsList.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()).reversed());
-                Products productsObjcet = new Products(productsList);
-                productToXML(productsObjcet, key);
+                Products productsObject = new Products(productsList);
+                productToXML(productsObject, key, fileId);
             }
-            //sort by timestamp and price
-//            products.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()).reversed());
-//            Products productsObjcet = new Products(products);
-//            productToXML(productsObjcet);
-
-
-        } catch (ParserConfigurationException | IOException | SAXException e) {
+        } catch (ParserConfigurationException | IOException | SAXException | JAXBException e) {
             e.printStackTrace();
         }
 
@@ -71,11 +73,13 @@ public class XmlParser {
             Node orderNode = orderNodes.item(i);
             Instant created = null;
             long orderId = 0;
+            int fileId = 0;
             NodeList productNodes = orderNode.getChildNodes();
             if (orderNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element orderElement = (Element) orderNode;
                 created = Instant.parse(orderElement.getAttribute("created") + "Z");
                 orderId = Long.parseLong(orderElement.getAttribute("ID"));
+                fileId = Integer.parseInt(orderElement.getAttribute("ID".substring(0, 2)));
             }
 
 
@@ -117,8 +121,7 @@ public class XmlParser {
     }
 
 
-    private void productToXML(Products products, String fileName) {
-        try {
+    private void productToXML(Products products, String fileName, int fileId) throws JAXBException, IOException {
             JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -127,14 +130,11 @@ public class XmlParser {
 
             String xmlContent = sw.toString();
             System.out.println( xmlContent );
+            Files.createDirectories(Paths.get("src/main/java/org/example/outputFiles/order" + fileId));
+            File file = new File("src/main/java/org/example/outputFiles/order" + fileId + "/" + fileName + fileId + ".xml");
 
-            File file = new File(fileName + ".xml");
             jaxbMarshaller.marshal(products, file);
 
-
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
     }
 
 
