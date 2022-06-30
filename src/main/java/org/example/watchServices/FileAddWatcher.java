@@ -1,5 +1,6 @@
 package org.example.watchServices;
 
+import org.example.configs.Config;
 import org.example.xmlHandlers.XmlHandler;
 import org.example.xmlHandlers.XmlParser;
 
@@ -18,6 +19,10 @@ public class FileAddWatcher {
 
     public void watchForChanges() {
         try (WatchService service = FileSystems.getDefault().newWatchService()) {
+
+            Map<String, String> configProperties = Config.getConfigProperties();
+            String inputPath = configProperties.get("inputPath");
+
             Map<WatchKey, Path> keyMap = new HashMap<>();
             Path path = Paths.get("src/main/java/org/example/inputFiles");
             keyMap.put(path.register(service,

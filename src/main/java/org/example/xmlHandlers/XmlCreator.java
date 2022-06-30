@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class XmlCreator {
 
-    public void productToXML(Map<String, List<Product>> suppliersProducts, String fileName, int fileId) {
+    public void productToXML(Map<String, List<Product>> suppliersProducts, int fileId) {
         Map<String, String> configProperties = Config.getConfigProperties();
         String outputPath = configProperties.get("outputPath");
 
@@ -36,8 +36,8 @@ public class XmlCreator {
 
                 String xmlContent = sw.toString();
                 System.out.println(xmlContent);
-                Files.createDirectories(Paths.get(outputPath + "order" + fileId));
-                File file = new File(outputPath + "order" + fileId + "/" + fileName + fileId + ".xml");
+                Files.createDirectories(Paths.get(outputPath + "/order" + fileId));
+                File file = new File(outputPath + "/order" + fileId + "/" +  key + fileId + ".xml");
 
                 jaxbMarshaller.marshal(products, file);
 

@@ -23,7 +23,7 @@ public class XmlHandler {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        xmlCreator.productToXML(suppliersProducts, fileName, fileId);
+        xmlCreator.productToXML(suppliersProducts,  fileId);
 
     }
 

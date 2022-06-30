@@ -29,10 +29,7 @@ public class Product {
     private String supplier;
     private long orderid;
 
-//    @XmlTransient
-//    public void setTimeStamp(Instant timeStamp) {
-//        this.timeStamp = timeStamp;
-//    }
+
 
 
 

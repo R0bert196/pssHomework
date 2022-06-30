@@ -33,7 +33,7 @@ public class XmlParser {
             Map<String, String> configProperties = Config.getConfigProperties();
             String inputPath = configProperties.get("inputPath");
 
-            File xmlFile = new File(inputPath + fileName);
+            File xmlFile = new File(inputPath +  "/" + fileName);
 
             this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             NodeList orderNodes = getOrderNodes(xmlFile);

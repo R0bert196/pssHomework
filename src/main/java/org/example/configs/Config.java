@@ -20,8 +20,8 @@ public class Config {
             Properties prop = new Properties();
             prop.load(input);
 
-            appProperties.put("inputPath", prop.getProperty("input_file_location"));
-            appProperties.put("outputPath", prop.getProperty("output_file_location"));
+            appProperties.put("inputPath", prop.getProperty("INPUT_FILE_LOCATION"));
+            appProperties.put("outputPath", prop.getProperty("OUTPUT_FILE_LOCATION"));
             return appProperties;
         } catch (IOException e) {
             e.printStackTrace();
