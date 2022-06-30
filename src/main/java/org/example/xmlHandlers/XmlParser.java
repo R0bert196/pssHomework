@@ -25,29 +25,45 @@ public class XmlParser {
         this.factory = factory;
     }
 
+    /**
+     * parseOrderXml is the main method responsible for the action flow of parsing the xml
+     * and creating a file for each supplier found.
+     *
+     * @param fileName - the name of the file added to the input folder
+     * @return
+     */
     //sa il numesc xmlToObject?
-    public void parseOrderXml(String fileName) {
-        int fileId = validateFilename(fileName);
+    public Map<String, List<Product>> parseOrderXml(String fileName) throws IllegalAccessException {
 
+        try {
         //Astea sa le scot la nivelul clasei? Le repet si in metoda de mai jos
         Map<String, String> configProperties = Config.getConfigProperties();
-        String inputPath =  configProperties.get("inputPath");
+        String inputPath = configProperties.get("inputPath");
 
         File xmlFile = new File(inputPath + fileName);
-        try {
-            this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
+            this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             NodeList orderNodes = getOrderNodes(xmlFile);
-            Map<String, List<Product>> productsMap = getProducts(orderNodes);
-            for (String key : productsMap.keySet()) {
-                List<Product> productsList = productsMap.get(key);
-                productsList.sort(Comparator.comparing(Product::getTimeStamp).thenComparing(p -> p.getPrice().getPrice()).reversed());
-                Products productsObject = new Products(productsList);
-                productToXML(productsObject, key, fileId);
-            }
-        } catch (ParserConfigurationException | IOException | SAXException | JAXBException e) {
+            return getProducts(orderNodes);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
+            throw new IllegalAccessException();
         }
+
+    }
+
+
+
+    public void main(String fileName)  {
+        int fileId = validateFilename(fileName);
+        Map<String, List<Product>> suppliersProducts;
+        try {
+            suppliersProducts = parseOrderXml(fileName);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        productToXML(suppliersProducts, fileName, fileId);
+
     }
 
     private int validateFilename(String fileName) {
@@ -62,8 +78,7 @@ public class XmlParser {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(xmlFile);
         doc.getDocumentElement().normalize();
-        NodeList orderNodes = doc.getElementsByTagName("order");
-        return orderNodes;
+        return doc.getElementsByTagName("order");
     }
 
 
@@ -120,21 +135,34 @@ public class XmlParser {
     }
 
 
-    private void productToXML(Products products, String fileName, int fileId) throws JAXBException, IOException {
+
+    private void productToXML(Map<String, List<Product>> suppliersProducts, String fileName, int fileId) {
         Map<String, String> configProperties = Config.getConfigProperties();
         String outputPath = configProperties.get("outputPath");
 
-        Marshaller jaxbMarshaller = getMarshaller();
-        StringWriter sw = new StringWriter();
+        try {
+            Marshaller jaxbMarshaller = getMarshaller();
+            StringWriter sw = new StringWriter();
 
-        jaxbMarshaller.marshal(products, sw);
+            for (String key : suppliersProducts.keySet()) {
+                List<Product> productsList = suppliersProducts.get(key);
+                productsList.sort(Comparator.comparing(Product::getTimeStamp).thenComparing(p -> p.getPrice().getPrice()).reversed());
+                Products products = new Products(productsList);
 
-        String xmlContent = sw.toString();
-        System.out.println(xmlContent);
-        Files.createDirectories(Paths.get(outputPath + "order" + fileId));
-        File file = new File(outputPath + "order" + fileId + "/" + fileName + fileId + ".xml");
 
-        jaxbMarshaller.marshal(products, file);
+                jaxbMarshaller.marshal(products, sw);
+
+                String xmlContent = sw.toString();
+                System.out.println(xmlContent);
+                Files.createDirectories(Paths.get(outputPath + "order" + fileId));
+                File file = new File(outputPath + "order" + fileId + "/" + fileName + fileId + ".xml");
+
+                jaxbMarshaller.marshal(products, file);
+
+            }
+        } catch (JAXBException | IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

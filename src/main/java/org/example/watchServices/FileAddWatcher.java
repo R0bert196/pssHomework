@@ -31,7 +31,7 @@ public class FileAddWatcher {
                     WatchEvent.Kind<?> kind = event.kind();
                     Path eventPath = (Path) event.context();
                     System.out.println(eventPath);
-                    xmlParser.parseOrderXml(String.valueOf(eventPath));
+                    xmlParser.main(String.valueOf(eventPath));
 
                 }
 
