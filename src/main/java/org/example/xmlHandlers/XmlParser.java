@@ -1,13 +1,8 @@
 package org.example.xmlHandlers;
 
 import org.example.configs.Config;
-import org.example.pojos.Price;
-import org.example.pojos.Product;
-import org.example.pojos.Products;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.example.pojos.*;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -17,10 +12,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.parsers.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.time.Instant;
 import java.util.*;
 
@@ -33,23 +26,15 @@ public class XmlParser {
     }
 
     public void parseOrderXml(String fileName) {
+        int fileId = validateFilename(fileName);
         Map<String, String> configProperties = Config.getConfigProperties();
         String inputPath =  configProperties.get("inputPath");
 
         File xmlFile = new File(inputPath + fileName);
-        int fileId;
-        try {
-            fileId = Integer.parseInt(fileName.substring(6, 8));
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Incorrect file name, file isn't of type orders##.xml");
-        }
         try {
             this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(xmlFile);
-            doc.getDocumentElement().normalize();
-            NodeList orderNodes = doc.getElementsByTagName("order");
+            NodeList orderNodes = getOrderNodes(xmlFile);
             Map<String, List<Product>> productsMap = getProducts(orderNodes);
             for (String key : productsMap.keySet()) {
                 List<Product> productsList = productsMap.get(key);
@@ -60,7 +45,22 @@ public class XmlParser {
         } catch (ParserConfigurationException | IOException | SAXException | JAXBException e) {
             e.printStackTrace();
         }
+    }
 
+    private int validateFilename(String fileName) {
+        try {
+            return Integer.parseInt(fileName.substring(6, 8));
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Incorrect file name, file isn't of type orders##.xml");
+        }
+    }
+
+    private NodeList getOrderNodes(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(xmlFile);
+        doc.getDocumentElement().normalize();
+        NodeList orderNodes = doc.getElementsByTagName("order");
+        return orderNodes;
     }
 
 
