@@ -25,22 +25,15 @@ public class XmlParser {
         this.factory = factory;
     }
 
-    /**
-     * parseOrderXml is the main method responsible for the action flow of parsing the xml
-     * and creating a file for each supplier found.
-     *
-     * @param fileName - the name of the file added to the input folder
-     * @return
-     */
     //sa il numesc xmlToObject?
     public Map<String, List<Product>> parseOrderXml(String fileName) throws IllegalAccessException {
 
         try {
-        //Astea sa le scot la nivelul clasei? Le repet si in metoda de mai jos
-        Map<String, String> configProperties = Config.getConfigProperties();
-        String inputPath = configProperties.get("inputPath");
+            //Astea sa le scot la nivelul clasei? Le repet si in metoda de mai jos
+            Map<String, String> configProperties = Config.getConfigProperties();
+            String inputPath = configProperties.get("inputPath");
 
-        File xmlFile = new File(inputPath + fileName);
+            File xmlFile = new File(inputPath + fileName);
 
             this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             NodeList orderNodes = getOrderNodes(xmlFile);
@@ -52,27 +45,6 @@ public class XmlParser {
 
     }
 
-
-
-    public void main(String fileName)  {
-        int fileId = validateFilename(fileName);
-        Map<String, List<Product>> suppliersProducts;
-        try {
-            suppliersProducts = parseOrderXml(fileName);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        productToXML(suppliersProducts, fileName, fileId);
-
-    }
-
-    private int validateFilename(String fileName) {
-        try {
-            return Integer.parseInt(fileName.substring(6, 8));
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Incorrect file name, file isn't of type orders##.xml");
-        }
-    }
 
     private NodeList getOrderNodes(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -133,45 +105,5 @@ public class XmlParser {
         }
         return suppliersProducts;
     }
-
-
-
-    private void productToXML(Map<String, List<Product>> suppliersProducts, String fileName, int fileId) {
-        Map<String, String> configProperties = Config.getConfigProperties();
-        String outputPath = configProperties.get("outputPath");
-
-        try {
-            Marshaller jaxbMarshaller = getMarshaller();
-            StringWriter sw = new StringWriter();
-
-            for (String key : suppliersProducts.keySet()) {
-                List<Product> productsList = suppliersProducts.get(key);
-                productsList.sort(Comparator.comparing(Product::getTimeStamp).thenComparing(p -> p.getPrice().getPrice()).reversed());
-                Products products = new Products(productsList);
-
-
-                jaxbMarshaller.marshal(products, sw);
-
-                String xmlContent = sw.toString();
-                System.out.println(xmlContent);
-                Files.createDirectories(Paths.get(outputPath + "order" + fileId));
-                File file = new File(outputPath + "order" + fileId + "/" + fileName + fileId + ".xml");
-
-                jaxbMarshaller.marshal(products, file);
-
-            }
-        } catch (JAXBException | IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private Marshaller getMarshaller() throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        return jaxbMarshaller;
-    }
-
 
 }

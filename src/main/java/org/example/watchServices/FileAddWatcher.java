@@ -1,5 +1,6 @@
 package org.example.watchServices;
 
+import org.example.xmlHandlers.XmlHandler;
 import org.example.xmlHandlers.XmlParser;
 
 import java.io.IOException;
@@ -9,10 +10,10 @@ import java.util.Map;
 
 public class FileAddWatcher {
 
-    XmlParser xmlParser;
+    XmlHandler xmlHandler;
 
-    public FileAddWatcher(XmlParser xmlParser) {
-        this.xmlParser = xmlParser;
+    public FileAddWatcher(XmlHandler xmlHandler) {
+        this.xmlHandler = xmlHandler;
     }
 
     public void watchForChanges() {
@@ -29,10 +30,11 @@ public class FileAddWatcher {
 
                 for(WatchEvent<?> event : watchKey.pollEvents()) {
                     WatchEvent.Kind<?> kind = event.kind();
+
                     Path eventPath = (Path) event.context();
                     System.out.println(eventPath);
-                    xmlParser.main(String.valueOf(eventPath));
 
+                    xmlHandler.processFile(String.valueOf(eventPath));
                 }
 
             } while (watchKey.reset());
