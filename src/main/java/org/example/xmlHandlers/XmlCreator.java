@@ -1,5 +1,6 @@
 package org.example.xmlHandlers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.configs.Config;
 import org.example.pojos.Product;
 import org.example.pojos.Products;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class XmlCreator {
 
     public void productToXML(Map<String, List<Product>> suppliersProducts, int fileId) {
@@ -35,7 +37,7 @@ public class XmlCreator {
                 jaxbMarshaller.marshal(products, sw);
 
                 String xmlContent = sw.toString();
-                System.out.println(xmlContent);
+                log.info("\n" + xmlContent);
                 Files.createDirectories(Paths.get(outputPath + "/order" + fileId));
                 File file = new File(outputPath + "/order" + fileId + "/" +  key + fileId + ".xml");
 

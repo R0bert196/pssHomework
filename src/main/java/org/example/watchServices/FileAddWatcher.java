@@ -1,5 +1,6 @@
 package org.example.watchServices;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.configs.Config;
 import org.example.xmlHandlers.XmlHandler;
 import org.example.xmlHandlers.XmlParser;
@@ -9,6 +10,7 @@ import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class FileAddWatcher {
 
     XmlHandler xmlHandler;
@@ -24,7 +26,7 @@ public class FileAddWatcher {
             String inputPath = configProperties.get("inputPath");
 
             Map<WatchKey, Path> keyMap = new HashMap<>();
-            Path path = Paths.get("src/main/java/org/example/inputFiles");
+            Path path = Paths.get(inputPath);
             keyMap.put(path.register(service,
                     StandardWatchEventKinds.ENTRY_CREATE),
                     path);
@@ -37,7 +39,7 @@ public class FileAddWatcher {
                     WatchEvent.Kind<?> kind = event.kind();
 
                     Path eventPath = (Path) event.context();
-                    System.out.println(eventPath);
+                    log.info("Starting processing" + eventPath);
 
                     xmlHandler.processFile(String.valueOf(eventPath));
                 }
