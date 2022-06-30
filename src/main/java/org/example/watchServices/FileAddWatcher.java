@@ -41,8 +41,9 @@ public class FileAddWatcher {
         }
 
       } while (watchKey.reset());
+
     } catch (IOException | InterruptedException e) {
-      throw new RuntimeException(e);
+      log.error("An error occurred while running the file changes watcher", e);
     }
   }
 }

@@ -46,7 +46,7 @@ public class XmlCreator {
         jaxbMarshaller.marshal(products, file);
       }
     } catch (JAXBException | IOException e) {
-      e.printStackTrace();
+      log.error("An error occurred while trying to create the product xml files", e);
     }
   }
 

@@ -1,5 +1,6 @@
 package org.example.configs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.xmlHandlers.XmlParser;
 
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+@Slf4j
 public class Config {
 
   public static Map<String, String> getConfigProperties() {
@@ -25,7 +27,7 @@ public class Config {
       appProperties.put("outputPath", prop.getProperty("OUTPUT_FILE_LOCATION"));
       return appProperties;
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("There was an error while reading the config.properties", e);
     }
     return appProperties;
   }

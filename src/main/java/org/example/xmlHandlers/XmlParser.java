@@ -1,5 +1,6 @@
 package org.example.xmlHandlers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.configs.Config;
 ;
 import org.example.pojos.Price;
@@ -16,10 +17,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
+@Slf4j
 public class XmlParser {
   private final DocumentBuilderFactory factory;
 
@@ -28,8 +31,7 @@ public class XmlParser {
   }
 
   // sa il numesc xmlToObject?
-  public Map<String, List<Product>> parseOrder(String fileName) throws IllegalAccessException {
-
+  public Map<String, List<Product>> parseOrder(String fileName) throws FileNotFoundException {
     try {
       Map<String, String> configProperties = Config.getConfigProperties();
       String inputPath = configProperties.get("inputPath");
@@ -39,9 +41,10 @@ public class XmlParser {
       this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       NodeList orderNodes = getOrderNodes(xmlFile);
       return getProducts(orderNodes);
+
+      //TODO
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      e.printStackTrace();
-      throw new IllegalAccessException();
+      throw new FileNotFoundException(e.getMessage());
     }
   }
 
@@ -68,7 +71,7 @@ public class XmlParser {
         orderId = Long.parseLong(orderElement.getAttribute("ID"));
       }
 
-      //          products nodes
+      //products nodes
       for (int j = 0; j < productNodes.getLength(); j++) {
         Node productNode = productNodes.item(j);
         if (productNode.getNodeType() == Node.ELEMENT_NODE) {
