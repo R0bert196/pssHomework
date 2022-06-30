@@ -25,8 +25,11 @@ public class XmlParser {
         this.factory = factory;
     }
 
+    //sa il numesc xmlToObject?
     public void parseOrderXml(String fileName) {
         int fileId = validateFilename(fileName);
+
+        //Astea sa le scot la nivelul clasei? Le repet si in metoda de mai jos
         Map<String, String> configProperties = Config.getConfigProperties();
         String inputPath =  configProperties.get("inputPath");
 
@@ -38,7 +41,7 @@ public class XmlParser {
             Map<String, List<Product>> productsMap = getProducts(orderNodes);
             for (String key : productsMap.keySet()) {
                 List<Product> productsList = productsMap.get(key);
-                productsList.sort(Comparator.comparing(Product::getTimeStamp).reversed().thenComparing(p -> p.getPrice().getPrice()).reversed());
+                productsList.sort(Comparator.comparing(Product::getTimeStamp).thenComparing(p -> p.getPrice().getPrice()).reversed());
                 Products productsObject = new Products(productsList);
                 productToXML(productsObject, key, fileId);
             }
@@ -72,13 +75,11 @@ public class XmlParser {
             Node orderNode = orderNodes.item(i);
             Instant created = null;
             long orderId = 0;
-            int fileId = 0;
             NodeList productNodes = orderNode.getChildNodes();
             if (orderNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element orderElement = (Element) orderNode;
                 created = Instant.parse(orderElement.getAttribute("created") + "Z");
                 orderId = Long.parseLong(orderElement.getAttribute("ID"));
-                fileId = Integer.parseInt(orderElement.getAttribute("ID".substring(0, 2)));
             }
 
 //            products nodes
@@ -122,10 +123,10 @@ public class XmlParser {
     private void productToXML(Products products, String fileName, int fileId) throws JAXBException, IOException {
         Map<String, String> configProperties = Config.getConfigProperties();
         String outputPath = configProperties.get("outputPath");
-        JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+        Marshaller jaxbMarshaller = getMarshaller();
         StringWriter sw = new StringWriter();
+
         jaxbMarshaller.marshal(products, sw);
 
         String xmlContent = sw.toString();
@@ -135,6 +136,13 @@ public class XmlParser {
 
         jaxbMarshaller.marshal(products, file);
 
+    }
+
+    private Marshaller getMarshaller() throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        return jaxbMarshaller;
     }
 
 
