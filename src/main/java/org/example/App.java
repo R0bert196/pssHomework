@@ -1,6 +1,8 @@
 package org.example;
 
 import org.example.watchServices.FileAddWatcher;
+import org.example.xmlHandlers.XmlCreator;
+import org.example.xmlHandlers.XmlHandler;
 import org.example.xmlHandlers.XmlParser;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,10 +15,20 @@ public class App
 {
     public static void main( String[] args )
     {
-        FileAddWatcher fileAddWatcher = new FileAddWatcher();
-        fileAddWatcher.watchForChanges();
+
+
 
         XmlParser xmlParser = new XmlParser(DocumentBuilderFactory.newInstance());
-        xmlParser.parseOrderXml();
+        XmlCreator xmlCreator = new XmlCreator();
+
+        XmlHandler xmlHandler = new XmlHandler(xmlParser, xmlCreator);
+
+        FileAddWatcher fileAddWatcher = new FileAddWatcher(xmlHandler);
+
+        fileAddWatcher.watchForChanges();
+
+
+
+
     }
 }

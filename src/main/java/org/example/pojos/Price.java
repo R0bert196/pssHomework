@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlValue;
 
 @NoArgsConstructor
 @AllArgsConstructor
-//@Data
 @Getter
 @Builder
 public class Price {
