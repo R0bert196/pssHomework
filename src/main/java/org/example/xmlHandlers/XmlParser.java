@@ -1,5 +1,6 @@
 package org.example.xmlHandlers;
 
+import org.example.configs.Config;
 import org.example.pojos.Price;
 import org.example.pojos.Product;
 import org.example.pojos.Products;
@@ -13,11 +14,10 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,13 +27,16 @@ import java.util.*;
 public class XmlParser {
     private final DocumentBuilderFactory factory;
 
+
     public XmlParser(DocumentBuilderFactory factory) {
         this.factory = factory;
     }
 
     public void parseOrderXml(String fileName) {
-//        String fileName = "orders23.xml";
-        File xmlFile = new File("src/main/java/org/example/inputFiles/" + fileName);
+        Map<String, String> configProperties = Config.getConfigProperties();
+        String inputPath =  configProperties.get("inputPath");
+
+        File xmlFile = new File(inputPath + fileName);
         int fileId;
         try {
             fileId = Integer.parseInt(fileName.substring(6, 8));
@@ -117,6 +120,8 @@ public class XmlParser {
 
 
     private void productToXML(Products products, String fileName, int fileId) throws JAXBException, IOException {
+        Map<String, String> configProperties = Config.getConfigProperties();
+        String outputPath = configProperties.get("outputPath");
         JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -125,8 +130,8 @@ public class XmlParser {
 
         String xmlContent = sw.toString();
         System.out.println(xmlContent);
-        Files.createDirectories(Paths.get("src/main/java/org/example/outputFiles/order" + fileId));
-        File file = new File("src/main/java/org/example/outputFiles/order" + fileId + "/" + fileName + fileId + ".xml");
+        Files.createDirectories(Paths.get(outputPath + "order" + fileId));
+        File file = new File(outputPath + "order" + fileId + "/" + fileName + fileId + ".xml");
 
         jaxbMarshaller.marshal(products, file);
 
