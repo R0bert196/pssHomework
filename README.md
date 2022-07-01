@@ -7,9 +7,16 @@ Xml Parser is an application made for SACOM, that processes the orders XML files
 ---
 The solution approach uses two libraries:
 
-The first one, DOM Parser, a built-in library, responsible for creating objects from the orders xml, parsing the xml as an object graph (a tree like structure) in memory – so called “Document Object Model (DOM)“.
+The first one, **DOM Parser**, a built-in library, responsible for creating objects from the orders xml, parsing the xml as an object graph (a tree like structure) in memory – so called “Document Object Model (DOM)“.
 
-The second one, JAXB, responsible for marshalling (writing) the created objects into xml files. It supports a binding framework that maps XML elements and attributes to Java fields and properties using Java annotations.
+The second one, **JAXB**, responsible for marshalling (writing) the created objects into xml files. It supports a binding framework that maps XML elements and attributes to Java fields and properties using Java annotations.
+
+### Used libraries
+
+- Lombok
+- Junit
+- JAXB
+- DOM Parser (buit-in)
 
 ### How to use
 
