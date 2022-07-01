@@ -30,7 +30,11 @@ public class XmlParser {
     this.factory = factory;
   }
 
-  // sa il numesc xmlToObject?
+  /**
+   * @param fileName - the name of the file to be parsed
+   * @return A map containing suppliers as key and a list of products for that key
+   * @throws FileNotFoundException
+   */
   public Map<String, List<Product>> parseOrder(String fileName) throws FileNotFoundException {
     try {
       Map<String, String> configProperties = Config.getConfigProperties();
@@ -41,13 +45,18 @@ public class XmlParser {
       this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       NodeList orderNodes = getOrderNodes(xmlFile);
       return getProducts(orderNodes);
-
-      //TODO
     } catch (ParserConfigurationException | IOException | SAXException e) {
       throw new FileNotFoundException(e.getMessage());
     }
   }
 
+  /**
+   * @param xmlFile - the added file
+   * @return - NodeList containing the orders nodes
+   * @throws ParserConfigurationException
+   * @throws SAXException
+   * @throws IOException
+   */
   private NodeList getOrderNodes(File xmlFile)
       throws ParserConfigurationException, SAXException, IOException {
     DocumentBuilder builder = factory.newDocumentBuilder();
@@ -56,10 +65,13 @@ public class XmlParser {
     return doc.getElementsByTagName("order");
   }
 
+  /**
+   * @param orderNodes - the NodeList containing the orders nodes
+   * @return - A map containing suppliers as key and a list of products for that key
+   */
   private Map<String, List<Product>> getProducts(NodeList orderNodes) {
     Map<String, List<Product>> suppliersProducts = new HashMap<>();
 
-    // orders nodes
     for (int i = 0; i < orderNodes.getLength(); i++) {
       Node orderNode = orderNodes.item(i);
       Instant created = null;
@@ -71,7 +83,6 @@ public class XmlParser {
         orderId = Long.parseLong(orderElement.getAttribute("ID"));
       }
 
-      //products nodes
       for (int j = 0; j < productNodes.getLength(); j++) {
         Node productNode = productNodes.item(j);
         if (productNode.getNodeType() == Node.ELEMENT_NODE) {

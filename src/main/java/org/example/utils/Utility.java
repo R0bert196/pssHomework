@@ -2,7 +2,11 @@ package org.example.utils;
 
 public class Utility {
 
-  public static int validateFilename(String fileName) {
+  /**
+   * @param fileName - the name of the added file
+   * @return - the fileId extracted from the filename
+   */
+  public static int getFileId(String fileName) {
     try {
       return Integer.parseInt(fileName.substring(6, 8));
     } catch (NumberFormatException e) {
