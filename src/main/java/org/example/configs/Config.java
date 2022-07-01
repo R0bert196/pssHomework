@@ -26,25 +26,18 @@ public class Config {
         Files.newInputStream(Paths.get("src/main/java/resources/config.properties"))) {
       Properties prop = new Properties();
       prop.load(input);
-      //todo sa scot mai sus
-//      String inputFileLocation = prop.getProperty("INPUT_FILE_LOCATION");
       String inputFileLocation = getLocation(prop, "INPUT_FILE_LOCATION");
       String outputFileLocation = getLocation(prop, "OUTPUT_FILE_LOCATION");
       appProperties.put("inputPath", inputFileLocation);
       appProperties.put("outputPath", outputFileLocation);
-//      return appProperties;
     } catch (IOException e) {
-//      throw new
       log.error("There was an error while reading the config.properties", e);
     }
     return appProperties;
   }
 
-
   private static String getLocation(Properties prop, String location) {
     String path = prop.getProperty(location);
-
-    //todo try catch
     if (location == null) {
       throw new IllegalArgumentException("Couldn't read all the configuration file values");
     }

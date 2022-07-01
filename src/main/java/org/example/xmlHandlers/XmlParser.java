@@ -46,8 +46,6 @@ public class XmlParser {
       this.factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       NodeList orderNodes = getOrderNodes(xmlFile);
       return getProducts(orderNodes);
-
-      // TODO
     } catch (ParserConfigurationException | IOException | SAXException e) {
       throw new FileNotFoundException(e.getMessage());
     }
