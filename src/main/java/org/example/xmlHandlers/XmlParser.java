@@ -35,7 +35,6 @@ public class XmlParser {
    * @return A map containing suppliers as key and a list of products for that key
    * @throws FileNotFoundException
    */
-  // sa il numesc xmlToObject?
   public Map<String, List<Product>> parseOrder(String fileName) throws FileNotFoundException {
     try {
       Map<String, String> configProperties = Config.getConfigProperties();
@@ -73,7 +72,6 @@ public class XmlParser {
   private Map<String, List<Product>> getProducts(NodeList orderNodes) {
     Map<String, List<Product>> suppliersProducts = new HashMap<>();
 
-    // orders nodes
     for (int i = 0; i < orderNodes.getLength(); i++) {
       Node orderNode = orderNodes.item(i);
       Instant created = null;
@@ -85,7 +83,6 @@ public class XmlParser {
         orderId = Long.parseLong(orderElement.getAttribute("ID"));
       }
 
-      // products nodes
       for (int j = 0; j < productNodes.getLength(); j++) {
         Node productNode = productNodes.item(j);
         if (productNode.getNodeType() == Node.ELEMENT_NODE) {
