@@ -18,22 +18,11 @@ import java.time.LocalDate;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Product {
 
+  @XmlTransient private Instant timeStamp;
 
-    @XmlTransient
-    private Instant timeStamp;
-
-    private String description;
-    private String gtin;
-    private Price price;
-    @XmlTransient
-    private String supplier;
-    private long orderid;
-
-//    @XmlTransient
-//    public void setTimeStamp(Instant timeStamp) {
-//        this.timeStamp = timeStamp;
-//    }
-
-
-
+  private String description;
+  private String gtin;
+  private Price price;
+  @XmlTransient private String supplier;
+  private long orderid;
 }

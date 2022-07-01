@@ -14,17 +14,16 @@ import javax.xml.bind.annotation.XmlValue;
 @Builder
 public class Price {
 
-    private String currency;
-    private float  price;
+  private String currency;
+  private float price;
 
-    @XmlAttribute
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-    @XmlValue
-    public void setPrice(float  price) {
-        this.price = price;
-    }
+  @XmlAttribute
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
 
-
+  @XmlValue
+  public void setPrice(float price) {
+    this.price = price;
+  }
 }

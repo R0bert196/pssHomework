@@ -14,9 +14,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Products {
 
-    private List<Product> product;
+  private List<Product> product;
 
-    public Products(List<Product> product) {
-        this.product = product;
-    }
+  public Products(List<Product> product) {
+    this.product = product;
+  }
 }
