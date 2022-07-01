@@ -20,6 +20,11 @@ import java.util.Map;
 @Slf4j
 public class XmlCreator {
 
+  /**
+   * @param suppliersProducts - the map which contains the suppliers as keys, and their products as
+   *     lists
+   * @param fileId - the id of the file added
+   */
   public void productToXML(Map<String, List<Product>> suppliersProducts, int fileId) {
     Map<String, String> configProperties = Config.getConfigProperties();
     String outputPath = configProperties.get("outputPath");
@@ -49,6 +54,7 @@ public class XmlCreator {
       log.error("An error occurred while trying to create the product xml files", e);
     }
   }
+
 
   private Marshaller getMarshaller() throws JAXBException {
     JAXBContext jaxbContext = JAXBContext.newInstance(Products.class);

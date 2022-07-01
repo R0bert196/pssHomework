@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-import static org.example.utils.Utility.validateFilename;
+import static org.example.utils.Utility.getFileId;
 
 @Slf4j
 public class XmlHandler {
@@ -20,8 +20,12 @@ public class XmlHandler {
     this.xmlCreator = xmlCreator;
   }
 
+  /**
+   * @param fileName - filename received from the watch service
+   * @throws FileNotFoundException
+   */
   public void processFile(String fileName) throws FileNotFoundException {
-    int fileId = validateFilename(fileName);
+    int fileId = getFileId(fileName);
     Map<String, List<Product>> suppliersProducts;
     suppliersProducts = xmlParser.parseOrder(fileName);
     xmlCreator.productToXML(suppliersProducts, fileId);

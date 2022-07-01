@@ -30,6 +30,11 @@ public class XmlParser {
     this.factory = factory;
   }
 
+  /**
+   * @param fileName - the name of the file to be parsed
+   * @return A map containing suppliers as key and a list of products for that key
+   * @throws FileNotFoundException
+   */
   // sa il numesc xmlToObject?
   public Map<String, List<Product>> parseOrder(String fileName) throws FileNotFoundException {
     try {
@@ -42,12 +47,19 @@ public class XmlParser {
       NodeList orderNodes = getOrderNodes(xmlFile);
       return getProducts(orderNodes);
 
-      //TODO
+      // TODO
     } catch (ParserConfigurationException | IOException | SAXException e) {
       throw new FileNotFoundException(e.getMessage());
     }
   }
 
+  /**
+   * @param xmlFile - the added file
+   * @return - NodeList containing the orders nodes
+   * @throws ParserConfigurationException
+   * @throws SAXException
+   * @throws IOException
+   */
   private NodeList getOrderNodes(File xmlFile)
       throws ParserConfigurationException, SAXException, IOException {
     DocumentBuilder builder = factory.newDocumentBuilder();
@@ -56,6 +68,10 @@ public class XmlParser {
     return doc.getElementsByTagName("order");
   }
 
+  /**
+   * @param orderNodes - the NodeList containing the orders nodes
+   * @return - A map containing suppliers as key and a list of products for that key
+   */
   private Map<String, List<Product>> getProducts(NodeList orderNodes) {
     Map<String, List<Product>> suppliersProducts = new HashMap<>();
 
@@ -71,7 +87,7 @@ public class XmlParser {
         orderId = Long.parseLong(orderElement.getAttribute("ID"));
       }
 
-      //products nodes
+      // products nodes
       for (int j = 0; j < productNodes.getLength(); j++) {
         Node productNode = productNodes.item(j);
         if (productNode.getNodeType() == Node.ELEMENT_NODE) {
