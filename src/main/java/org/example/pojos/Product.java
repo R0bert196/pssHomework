@@ -1,6 +1,5 @@
 package org.example.pojos;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

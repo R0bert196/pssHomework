@@ -1,7 +1,6 @@
 package org.example.pojos;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlAttribute;
